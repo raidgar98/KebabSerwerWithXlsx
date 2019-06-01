@@ -10,7 +10,7 @@ for generating report and tcpserwer i made, using toutrial of VoidRealms
 
 	https://www.youtube.com/watch?v=zMgbVN3uQ-E
 
-So i want to thank you.
+So i want to thank you. I don't know how to contact them to ask about license header or to say thank you so if u see this plesae contact me (bottom) :)
 
 This is first part of whole project which consist of this serwer and mobile app, also written in Qt (QML).
 
