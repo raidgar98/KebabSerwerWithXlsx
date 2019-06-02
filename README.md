@@ -95,7 +95,7 @@ Instruction for setup:
 
 This is how it works:
 
-![Presentation](https://raw.githubusercontent.com/raidgar98/KebabSerwerWithXlsx/master/HowSerwWork.mp4?raw=true)
+![Presentation](https://raw.githubusercontent.com/raidgar98/KebabSerwerWithXlsx/master/HowSerwWork.mp4)
 
 
 All bugs or advices you can send here:
