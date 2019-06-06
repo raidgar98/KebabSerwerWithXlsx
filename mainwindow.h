@@ -98,12 +98,11 @@ public slots:
 
 private:
 
-	//Wskaźnik na interfejs
     Ui::MainWindow *ui;
 
 signals:
 
-	//Sygnał emitowany, w momencie chęci wysłania odpowiedzi. Połączenie występuje w metodzie disp
+	//Signal emitted when answer is avaiable. Connected in mAnswerNewDataFunction
 	void writeAvaiable(QByteArray data);
 
 
