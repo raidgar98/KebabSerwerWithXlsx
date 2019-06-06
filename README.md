@@ -72,7 +72,8 @@ Instruction for setup:
 			extraCheese tinyint(1),
 			otherExtras tinyint(1),
 			takeAway tinyint(1),
-			isComplete tinyint(1),                                                                                	orderDateTime datetime
+			isComplete tinyint(1),
+			orderDateTime datetime UNIQUE
 			);
 
 
