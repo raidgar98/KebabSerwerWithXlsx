@@ -13,7 +13,7 @@
 		VALUES("elo", 1, 1, 1, 1, 1, 1, 1, 1, CURRENT_TIMESTAMP);
 
 */
-void MainWindow::writeLocalSQL(const QString & src) noexcept
+void MainWindow::mWriteLocalSQLFunction(const QString & src) noexcept
 {
         cout<<"Sending SQL: "<<src;
 	if(!__mIsDataBaseReady) return;
@@ -53,7 +53,7 @@ void MainWindow::__mSyncFunction() noexcept
 		}
 
 		//cout<<"Sending QUERRY: "<<q;
-		writeLocalSQL(q);
+		mWriteLocalSQLFunction(q);
 		mLogFunction(q, LogType::SQLSend);
 	}
 	QMessageBox a(QMessageBox::Icon::NoIcon, "Gotowe", "Pomyślnie zaimportowano wszystkie dane");
@@ -65,7 +65,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
 	ui->setupUi(this);
 	cout<<"Step 1";
-	connect(__mSerwerPointer, &TCPSerwer::avaiableRead, this, &MainWindow::disp);
+	connect(__mSerwerPointer, &TCPSerwer::avaiableRead, this, &MainWindow::mAnswerNewDataFunction);
 
 	__mDataBase = QSqlDatabase::addDatabase("QSQLITE");
 	__mDataBase.setDatabaseName(QStandardPaths::writableLocation(QStandardPaths::DownloadLocation) + "/allOrders");
@@ -133,7 +133,7 @@ void MainWindow::on_Button2_clicked()
 	//sync();
 }
 
-void MainWindow::disp()
+void MainWindow::mAnswerNewDataFunction()
 {
 	//cout << this << " disp Działa";
 	TcpConnection * tempSck = __mSerwerPointer->dataQueueRead.first().first;
@@ -200,7 +200,7 @@ bool MainWindow::mMakeDecissionFunction(QByteArray & src, const quint8 id)
 		a.close();
 
 		__mCSV2SQLengine = new SQLInterpreter("temp.txt", "INSERT INTO orders(dishName, dishSouce, extraMeat, extraSalad, extraFries, extraCheese, otherExtras, takeAway, isComplete, orderDateTime) VALUES('::1', ::2, ::3, ::4, ::5, ::6, ::7, ::8, ::9, '::x10');");
-		QObject::connect(__mCSV2SQLengine, &SQLInterpreter::saveSQL, this, &MainWindow::writeLocalSQL);
+		QObject::connect(__mCSV2SQLengine, &SQLInterpreter::saveSQL, this, &MainWindow::mWriteLocalSQLFunction);
 
 		__mCSV2SQLengine->save();
 

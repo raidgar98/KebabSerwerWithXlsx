@@ -81,19 +81,20 @@ private slots:
 	//Slot activated if 'stop' button clicked
     void on_Button2_clicked();
 
-	//Metoda odpowiedzialne za wyświetlenie najnowszej wiadomości od klienta, oraz ustawienie niezbędnych połączeń, celem ułatwienia wysłania odpowiedzi.
-	//Znajduje się w niej również wywołanie metody decyzyjnej
-    void disp();
+	//This methode is responsible for displaying newest message from client and set required connections (QObject::connect) to establish communication between this class and QTcpConnection
+	//Also here we call mMakeDecissionFunction
+	void mAnswerNewDataFunction();
 
-	//Metoda służąca do włączania automatycznego przewijania loggów
+	//Disable/Enable auto-scroll
 	void on_checkBox_stateChanged(int arg1);
 
+	//Open dialog for xlsx generation
 	void on_Button3_clicked();
 
 public slots:
 
 	//Writes SQL to local, our saviour, database
-	void writeLocalSQL(const QString& src) noexcept;
+	void mWriteLocalSQLFunction(const QString& src) noexcept;
 
 private:
 
