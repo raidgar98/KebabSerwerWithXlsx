@@ -1,5 +1,4 @@
-#ifndef TCPCONNECTION_H
-#define TCPCONNECTION_H
+#pragma once
 
 #include <QObject>
 #include <QDebug>
@@ -7,70 +6,66 @@
 #include <mutex>
 
 
-//Klasa odpowiedzialne za obsługę zdarzeń pojawiających się na gnieździe
+//Class responsible for handling events on socket
 class TcpConnection: public QObject
 {
     Q_OBJECT
 
 public:
 
-	//Unikalne ID każdego połączenia, celem łatwiejszej komunikacji.
+	//Unique ID for every connectio to make life easier
 	quint8 id;
 
-	//Zmienna informująca czy gniazdo jest gotowe na odbiór kolejnych danych
-	bool isReadyRead = false;
+	//Informs is socket ready for reading fresh data
+	bool mIsReadyRead = false;
 
-	//Konstruktor, z słowem kluczowym explicit, z uwagi na jednoargumentowość
+	//Auto-generated constructor
     explicit TcpConnection(QObject *parent = nullptr);
 
-	//Destruktor
+	//Destructor
     ~TcpConnection();
 
-	//Konfiguracja gniazda, głównie połączeń
-    virtual void setSocket(QTcpSocket * socket);
+	//Socket setup
+	virtual void mSetSocketFunction(QTcpSocket * socket);
 
-	//Zawiera ostatnio odebrane dane. Wymagane celem docelowej transmisji do mainwindow
-    QByteArray lastData;
+	//Stores last received data for future transmission to mainwindow
+	QByteArray mLastData;
 
-
+	//Getter for _mSocket
+	QTcpSocket * const mGetSocketFunction() const noexcept;
 
 protected:
 
-	//Wskaźnik na gniazdo, na którym operuje ta klasa
+	//Pointer on socket, this class working on
     QTcpSocket * _mSocket = nullptr;
 
-	//Zwrócenie wskaźnika
-    QTcpSocket * _getSocket();
 
 public slots:
 
-	//Slot aktywowany w momencie pomyślnego połączenia z klientem
+	//Slot activated if connection established correctly
     virtual void connected();
 
-	//Slot aktywowany w momencie odłączenia klienta
+	//Slot activated if disconnected
     virtual void disconnected();
 
-	//Slot aktywowany w momencie przybycia nowych danych
+	//Slot activated if new data arrived
     virtual void bytesWritten(qint64 bytes);
 
-	//Slot aktywowany w momencie zmiany statusu gniazda (np przez erwanie połączenia)
+	//Slot activated if sockets state changed
     virtual void statesChanged(QAbstractSocket::SocketState socketState);
 
-	//Slot aktywowany w momencie wystąpienia błędu na gnieździe)
+	//Slot activated  if error occured
     virtual void error(QAbstractSocket::SocketError sockError);
 
-	//Slot aktywowany celem wysłąnia informacji o przybyciu nowych danych
+	//Slot activated if socket is ready for reading
 	virtual void readyRead();
 
-	//Slot aktywowany w momencie chęci wysłania danych (aktywowany z mainwindow za pomocą sygnału)
+	//Slot activated to write data (slot for mainwindow)
 	void wrtieData(QByteArray src);
 
 signals:
 
-	//Emitowane, w momencie przybybia nowych danych
+	//Emitted if new data arrived
     void avaiableData();
 
-
 };
-
-#endif // TCPCONNECTION_H

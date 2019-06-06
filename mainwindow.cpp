@@ -95,7 +95,7 @@ void MainWindow::mChangeStateFunction(bool changeTo)
 
 	if(changeTo)
 	{
-		if(__mSerwerPointer->listen(QHostAddress::Any, ui->portBox->value()))
+		if(__mSerwerPointer->listen(QHostAddress::Any, static_cast<quint16>(ui->portBox->value())))
 		{
 			ui->Button1->setEnabled(false);
 			ui->Button2->setEnabled(true);
@@ -210,7 +210,6 @@ bool MainWindow::mMakeDecissionFunction(QByteArray & src, const quint8 id)
 
 		return true;
 	}
-	return false;
 }
 
 void MainWindow::mLogFunction(QString src, LogType t)

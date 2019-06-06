@@ -1,5 +1,4 @@
-#ifndef TCPCONNECTIONS_H
-#define TCPCONNECTIONS_H
+#pragma once
 
 #include <QObject>
 #include <QDebug>
@@ -11,66 +10,63 @@
 
 #include "tcpconnection.h"
 
-//Klasa zajmująca się składowaniem wszystkich połączeń, przekazywaniem danych oraz ustanawianiem połączeń między poszczególnymi połączeniami a klasą tcpSerwer
+//This class takes responsibilty for storing tcpconnections, forwarding data setting connections (QObject::connect) from connections (tcpconnection) to tcpserwer
 class TcpConnections : public QObject
 {
     Q_OBJECT
 public:
 
-	//Konstruktor z śłowem kluczowym explicit
+	//Auto-generated constructor
     explicit TcpConnections(QObject *parent = nullptr);
 
-	//Metoda zwracająca ilość aktuanych połączeń
-	virtual size_t count() const;
+	//Returns amount of currently active connctions
+	virtual size_t mCountFunction() const;
 
-	//Kolejka odebranych danych, wraz z odbiorcą
-	QQueue<QPair<TcpConnection*, QByteArray> > dataQueue;
+	//Queue of readed data with TcpConnection name tag
+	QQueue<QPair<TcpConnection*, QByteArray> > mTagData;
 
 protected:
 
-	//Spis wszystkich połączeń (rdzeń klasy)
+	//Core of this application -> List of all connections
     QMap<QTcpSocket*, TcpConnection*> _mConnection;
 
-	//Metoda do bezpiecznego usuwania połączeń
-    void removeSocket(QTcpSocket * socket);
+	//Methode for safety removing connection
+	void _mRemoveSocketFunction(QTcpSocket * socket);
 
 signals:
 
-	//Sygnał podnoszony w momencie zamykania (stopowania) serwera
+	//Signal emitted when server is closed (button 'stop' clicked)
     void quitting();
 
-	//Sygnał podnoszony po finalizacji procesu zamykania (gdy wszystki połączenia zostały zamknięte i usunięte)
+	//Signal emitted when all connections are closed
     void finished();
 
-	//Sygnał podnoszony, gdy przybyły nowe dane
+	//Signal emitted when new data arrived
     void freshData();
 
-	//Sygnał oznajmiający zwolnienie ID (gdy mamy zajęte ID 1 2 i 3, a odepnie się 2, to żeby to było kolejne ID, jakie zostanie przydzielone)
+	//Signal emitted to inform that id is free (ex: if we had reserved 1, 2 and 3, and 2'nd connection were closed, thanks to this mechanism, next connection will get id=2, not 4)
 	void releaseID(quint8 ID);
 
 protected slots:
 
-	//Slot aktywowany gdy połączenie 'wyraża chęć' zakończenia, lub wymaga usunięcia
+	//Slot activated when client or server want to end session
     void disconnected();
 
-	//Slot aktywowany w momencie pojawienia się błędu na gnieździe
+	//Slot activated when error occur
     void error(QAbstractSocket::SocketError sckErr);
 
-	//Slot odpowiedzialny za informowanie o przybyciu świerzych danych
+	//Slot activated to inform new data arrived
     void datasInside();
 
 public slots:
 
-	//Informuje o rozpoczęciu nowego połączeniu na nowym wątku
+	//[Log only] Informs about starting new thread
     void start();
 
-	////amyka wszystkie połączenia
+	//Close Connection
     void quit();
 
-	//Akceptuje, ustawia, konfiguruje i daje do nowego wątku nowe połączenia
+	//Accepts, set and add to new thread. Core methode
     void accept(qintptr handle, TcpConnection * connection);
 
-
 };
-
-#endif // TCPCONNECTIONS_H

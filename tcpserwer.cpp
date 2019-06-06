@@ -94,8 +94,8 @@ void TCPSerwer::complete()
 void TCPSerwer::freshDataArrive()
 {
 	cout << this << "Data arrived";
-	dataQueueRead.push_back(QPair<TcpConnection*, QByteArray>(_mConnections->dataQueue.front()));
-    _mConnections->dataQueue.pop_front();
+	dataQueueRead.push_back(QPair<TcpConnection*, QByteArray>(_mConnections->mTagData.front()));
+	_mConnections->mTagData.pop_front();
 	emit avaiableRead();
 }
 

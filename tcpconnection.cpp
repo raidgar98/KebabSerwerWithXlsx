@@ -12,7 +12,7 @@ TcpConnection::~TcpConnection()
 	qDebug()<<this<<" Destoryed";
 }
 
-void TcpConnection::setSocket(QTcpSocket *socket)
+void TcpConnection::mSetSocketFunction(QTcpSocket *socket)
 {
 	if(socket == nullptr) return;
 
@@ -30,27 +30,25 @@ void TcpConnection::setSocket(QTcpSocket *socket)
 void TcpConnection::wrtieData(QByteArray src)
 {
 	cout << this << "Sprawdzam dostępność...";
-	if(isReadyRead)
+	if(mIsReadyRead)
 	{
 		cout << this << "Wysyłam dane: "<< src;
-		isReadyRead = false;
+		mIsReadyRead = false;
 		_mSocket->write(src);
 		_mSocket->waitForBytesWritten();
 		cout << this << "Wysłano: "<<src;
-		_getSocket()->flush();
+		mGetSocketFunction()->flush();
 		cout << this << "Czyszcze buffor";
 	}
 
 	//_getSocket()->waitForReadyRead();
 }
 
-QTcpSocket *TcpConnection::_getSocket()
+QTcpSocket * const TcpConnection::mGetSocketFunction() const noexcept
 {
-	if(!sender()) return 0;
+	if(!sender()) return nullptr;
 
-	// qDebug()<<this<<" Getting Socket";
-
-	return static_cast<QTcpSocket*>(sender());
+	return static_cast<QTcpSocket * const>(sender());
 }
 
 void TcpConnection::connected()
@@ -64,28 +62,28 @@ void TcpConnection::disconnected()
 {
 	if(!sender()) return;
 
-	qDebug()<<this<<" disconnected "<<_getSocket();
+	qDebug()<<this<<" disconnected "<<mGetSocketFunction();
 }
 
 void TcpConnection::bytesWritten(qint64 bytes)
 {
 	if(!sender()) return;
 
-	qDebug() << this << _getSocket() << " bytes written = "<<bytes;
+	qDebug() << this << mGetSocketFunction() << " bytes written = "<<bytes;
 }
 
 void TcpConnection::statesChanged(QAbstractSocket::SocketState socketState)
 {
 	if(!sender()) return;
 
-	qDebug() << this << _getSocket() << " socket state changed to = "<<socketState;
+	qDebug() << this << mGetSocketFunction() << " socket state changed to = "<<socketState;
 }
 
 void TcpConnection::error(QAbstractSocket::SocketError sockError)
 {
 	if(!sender()) return;
 
-	qDebug() << this << _getSocket() << " error = "<<sockError;
+	qDebug() << this << mGetSocketFunction() << " error = "<<sockError;
 }
 
 void TcpConnection::readyRead()
@@ -93,8 +91,8 @@ void TcpConnection::readyRead()
 	cout << this << "Jestem tutaj readyRead";
 	if(!sender()) return;
 	//while(!lastDataM.try_lock()) {;};
-	lastData = _getSocket()->readAll();
-	QByteArray data(lastData);
+	mLastData = mGetSocketFunction()->readAll();
+	QByteArray data(mLastData);
 	//lastDataM.unlock();
 
 	cout << this << "Pobrano: "<<data;
@@ -109,10 +107,10 @@ void TcpConnection::readyRead()
 	}else if (data == "hello server \r\n\r\n\r\n")
 	{
 		cout << this << "wykryto rozpoczęcie sesji";
-		lastData = "^&\r\n";
+		mLastData = "^&\r\n";
 	}
 
-	isReadyRead = true;
+	mIsReadyRead = true;
 	emit avaiableData();
 }
 

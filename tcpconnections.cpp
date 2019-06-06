@@ -7,7 +7,7 @@ TcpConnections::TcpConnections(QObject *parent) : QObject(parent)
     cout<<this << " Created.";
 }
 
-size_t TcpConnections::count() const
+size_t TcpConnections::mCountFunction() const
 {
     QReadWriteLock lock;
     lock.lockForRead();
@@ -16,7 +16,7 @@ size_t TcpConnections::count() const
     return value;
 }
 
-void TcpConnections::removeSocket(QTcpSocket *socket)
+void TcpConnections::_mRemoveSocketFunction(QTcpSocket *socket)
 {
     if(socket == nullptr) return;
     if(!_mConnection.contains(socket)) return;
@@ -45,7 +45,7 @@ void TcpConnections::disconnected()
     if(!sck) return;
 	cout <<this<< "Usuwam: "<<sck;
 	emit releaseID(_mConnection.value(sck)->id);
-    removeSocket(sck);
+    _mRemoveSocketFunction(sck);
 	cout <<this<< "Usunięto";
 }
 
@@ -57,14 +57,14 @@ void TcpConnections::error(QAbstractSocket::SocketError sckErr)
     QTcpSocket * sck = static_cast<QTcpSocket*>(sender());
     if(!sck) return;
 
-    removeSocket(sck);
+    _mRemoveSocketFunction(sck);
 }
 
 void TcpConnections::datasInside()
 {
     TcpConnection * con =  static_cast<TcpConnection*>(sender());
 	//while(!con->lastDataM.try_lock()) {;}
-	dataQueue.push_back(QPair<TcpConnection* , QByteArray>(con,  con->lastData));
+	mTagData.push_back(QPair<TcpConnection* , QByteArray>(con,  con->mLastData));
     emit freshData();
 }
 
@@ -82,7 +82,7 @@ void TcpConnections::quit()
     for(auto var = _mConnection.begin(); var != _mConnection.end(); var++)
     {
         cout<<"Quitting socket: "<<var.key();
-        removeSocket(var.key());
+        _mRemoveSocketFunction(var.key());
     }
     cout<<this<<" Quitting finished.";
 
@@ -107,7 +107,7 @@ void TcpConnections::accept(qintptr handle, TcpConnection *connection)
     connect(sck, static_cast<void (QTcpSocket::*)(QAbstractSocket::SocketError)>(&QTcpSocket::error), this, &TcpConnections::error);
 
     connection->moveToThread(QThread::currentThread());
-    connection->setSocket(sck);
+    connection->mSetSocketFunction(sck);
 
     _mConnection.insert(sck, connection);
 

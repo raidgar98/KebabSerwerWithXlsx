@@ -12,7 +12,7 @@
 
 class IDManager : public QObject
 {
-	Q_OBJECT;
+	Q_OBJECT
 
 	std::array<bool, 10> __mAvaiableIDs = {false, false, false, false, false,false, false, false, false, false};
 
