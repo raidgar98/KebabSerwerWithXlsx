@@ -17,30 +17,29 @@ namespace Ui {
 class MainWindow;
 }
 
-//Klasa odpowiedzialna za szatę graficzną, oraz decyzyjność
+//Class responsible for UI and dcision making
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
-	//Klasa zarządzająca wszystkimi operacjami związanymi z połączeniami sieciowymi
-    TCPSerwer *serw = new TCPSerwer();
+	//Responsible for orginizing connections and data transferring
+	TCPSerwer *__mSerwerPointer = new TCPSerwer();
 
-	//Konfiguracja Bazy Danych
-	QSqlDatabase db;
+	//Data Base Connection
+	QSqlDatabase __mDataBase;
 
-	//Silnik konwersji CSV na SQL
-	SQLInterpreter* engine = nullptr;
+	//Engine for CSV -> SQL conversion
+	SQLInterpreter* __mCSV2SQLengine = nullptr;
 
 	//For storaging fast coming data
-	QQueue<QString> buffor;
+	QQueue<QString> __mDataBuffor;
 
-	//Inofrmacja czy baza danych jest gotowa do użytku
-	bool isDBReady = false;
+	bool __mIsDataBaseReady = false;
 
-	//Zmienna przechowująca, aktualny stan serwera, używana do obsługi interfejsu
-    bool currState = false;
+	//Storing actual serwer status (for UI)
+	bool __mCurrentSerwerState = false;
 
-	//Rodzaje logów
+	//Log types
 	enum LogType
 	{
 		Send,
@@ -52,34 +51,34 @@ class MainWindow : public QMainWindow
 
 
 	//For syncing buffor with SQL during update
-	void sync() noexcept;
+	void __mSyncFunction() noexcept;
 
 public:
 
-	//W tym miejscu zostaje zapisana najnowsza wiadomość od klienta oraz z jakiego gniazda on nadeszła
+	//Here we store answer from last active socket
 	QPair<QTcpSocket* , QByteArray> mAnswer;
 
-	//Konstruktor, z uwagi na jednoargumentowość z słówkiem kluczowym explicit, aby nie został użyty do 'dzikiej' konwersji
+	//Auto-Generated Constructor
 	explicit MainWindow(QWidget *parent = nullptr);
 
-	//Destruktor
+	//Auto-Generated Destructor
     ~MainWindow();
 
-	//Metoda odpowiedzialna za aktywowanie, oraz deaktywowanie odpowiednich przycisków w zależności od aktualnego stanu serwera
-    void changeState(bool changeTo);
+	//This Methode is responible for switching enable in addition to diffrent serwer state
+	void mChangeStateFunction(bool changeTo);
 
-	//Metoda decyzyjna, zawiera instrukcje do wykonania, w przypadku pojawienia się konkretnych sygnałów
-	bool doStuff(QByteArray& src, const quint8);
+	//Decision making methode
+	bool mMakeDecissionFunction(QByteArray& src, const quint8);
 
-	//Metoda służąca do logowania różnych informacji. Jako jedyna ma dostęp do pola tekstowego
-	void log(QString src, LogType t);
+	//Methode for logging, only this methode has access to TextField in UI
+	void mLogFunction(QString src, LogType t);
 
 private slots:
 
-	//Metoda aktywowana, w momencie naciśnięcia przycisku 'start'
+	//Slot activated if 'start' button clicked
     void on_Button1_clicked();
 
-	//Metoda aktywowana, w momencie naciśnięcia przycisku 'stop'
+	//Slot activated if 'stop' button clicked
     void on_Button2_clicked();
 
 	//Metoda odpowiedzialne za wyświetlenie najnowszej wiadomości od klienta, oraz ustawienie niezbędnych połączeń, celem ułatwienia wysłania odpowiedzi.

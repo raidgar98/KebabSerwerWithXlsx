@@ -16,23 +16,23 @@
 void MainWindow::writeLocalSQL(const QString & src) noexcept
 {
         cout<<"Sending SQL: "<<src;
-	if(!isDBReady) return;
-	db.open();
+	if(!__mIsDataBaseReady) return;
+	__mDataBase.open();
 	QSqlQuery q(src);
 
 	q.exec();
 
-	db.close();
+	__mDataBase.close();
 	//q.clear();
 	//q.finish();
 }
 
-void MainWindow::sync() noexcept
+void MainWindow::__mSyncFunction() noexcept
 {
-	while(buffor.size() != 0)
+	while(__mDataBuffor.size() != 0)
 	{
-		QString data = buffor.first();
-		buffor.pop_front();
+		QString data = __mDataBuffor.first();
+		__mDataBuffor.pop_front();
 
 		QString q = "INSERT INTO orders(dishName, dishSouce, extraMeat, extraSalad, extraFries, extraCheese,"
 					" otherExtras, takeAway, isComplete, orderDateTime) VALUES( ";
@@ -54,7 +54,7 @@ void MainWindow::sync() noexcept
 
 		//cout<<"Sending QUERRY: "<<q;
 		writeLocalSQL(q);
-		log(q, LogType::SQLSend);
+		mLogFunction(q, LogType::SQLSend);
 	}
 	QMessageBox a(QMessageBox::Icon::NoIcon, "Gotowe", "Pomyślnie zaimportowano wszystkie dane");
 }
@@ -65,22 +65,22 @@ MainWindow::MainWindow(QWidget *parent) :
 {
 	ui->setupUi(this);
 	cout<<"Step 1";
-	connect(serw, &TCPSerwer::avaiableRead, this, &MainWindow::disp);
+	connect(__mSerwerPointer, &TCPSerwer::avaiableRead, this, &MainWindow::disp);
 
-	db = QSqlDatabase::addDatabase("QSQLITE");
-	db.setDatabaseName(QStandardPaths::writableLocation(QStandardPaths::DownloadLocation) + "/allOrders");
+	__mDataBase = QSqlDatabase::addDatabase("QSQLITE");
+	__mDataBase.setDatabaseName(QStandardPaths::writableLocation(QStandardPaths::DownloadLocation) + "/allOrders");
 
-	if(db.open())
+	if(__mDataBase.open())
 	{
-		isDBReady=true;
+		__mIsDataBaseReady=true;
 		cout << "Działa";
 	}
 	else
 	{
-		isDBReady=false;
+		__mIsDataBaseReady=false;
 		cout << "Nie działa";
 	}
-	db.close();
+	__mDataBase.close();
 	cout<<"Step 2";
 }
 
@@ -89,18 +89,18 @@ MainWindow::~MainWindow()
 	delete ui;
 }
 
-void MainWindow::changeState(bool changeTo)
+void MainWindow::mChangeStateFunction(bool changeTo)
 {
-	if(changeTo == currState) return;
+	if(changeTo == __mCurrentSerwerState) return;
 
 	if(changeTo)
 	{
-		if(serw->listen(QHostAddress::Any, ui->portBox->value()))
+		if(__mSerwerPointer->listen(QHostAddress::Any, ui->portBox->value()))
 		{
 			ui->Button1->setEnabled(false);
 			ui->Button2->setEnabled(true);
 			ui->portBox->setEnabled(false);
-			currState = true;
+			__mCurrentSerwerState = true;
 			ui->Text1->append("<h4 style=\"color: 'green';\">"+QTime::currentTime().toString() + ">> Started</h4>\n");
 		}
 		else
@@ -112,8 +112,8 @@ void MainWindow::changeState(bool changeTo)
 	}
 	else
 	{
-		serw->close();
-		currState = false;
+		__mSerwerPointer->close();
+		__mCurrentSerwerState = false;
 		ui->Button1->setEnabled(!false);
 		ui->Button2->setEnabled(!true);
 		ui->portBox->setEnabled(!false);
@@ -124,27 +124,27 @@ void MainWindow::changeState(bool changeTo)
 
 void MainWindow::on_Button1_clicked()
 {
-	changeState(true);
+	mChangeStateFunction(true);
 }
 
 void MainWindow::on_Button2_clicked()
 {
-	changeState(false);
+	mChangeStateFunction(false);
 	//sync();
 }
 
 void MainWindow::disp()
 {
 	//cout << this << " disp Działa";
-	QByteArray temp = serw->dataQueueRead.front().second;
-	TcpConnection * tempSck = serw->dataQueueRead.first().first;
+	TcpConnection * tempSck = __mSerwerPointer->dataQueueRead.first().first;
+	QByteArray temp = __mSerwerPointer->dataQueueRead.front().second;
 	QObject::connect(this, &MainWindow::writeAvaiable, tempSck, &TcpConnection::wrtieData);
-	serw->dataQueueRead.pop_front();
-	log(temp, LogType::Received);
+	__mSerwerPointer->dataQueueRead.pop_front();
+	mLogFunction(temp, LogType::Received);
 	//cout<<this << "zaloggowałem: " <<temp;
-	if(doStuff(temp, tempSck->id))
+	if(mMakeDecissionFunction(temp, tempSck->id))
 	{
-		log(temp, LogType::Send);
+		mLogFunction(temp, LogType::Send);
 		//	cout << this << "disp: Wysyłam " <<temp;
 		emit writeAvaiable(temp);
 	}
@@ -156,13 +156,13 @@ void MainWindow::disp()
 			return;
 		}else
 		{
-			log("Err\r\n", LogType::Send);
+			mLogFunction("Err\r\n", LogType::Send);
 			emit writeAvaiable("Err\r\n");
 		}
 	}
 }
 
-bool MainWindow::doStuff(QByteArray & src, const quint8 id)
+bool MainWindow::mMakeDecissionFunction(QByteArray & src, const quint8 id)
 {
 	//cout << this << "Zaczynam robotę";
 	QByteArray data = src;
@@ -176,7 +176,7 @@ bool MainWindow::doStuff(QByteArray & src, const quint8 id)
 	}else if (data.indexOf("^\r\n")!=-1)
 	{
 		src = "\r\n";
-		log("User "+ QString::number(id) + " Disconnected", LogType::Info);
+		mLogFunction("User "+ QString::number(id) + " Disconnected", LogType::Info);
 		//sync();
 		return false;
 
@@ -184,13 +184,13 @@ bool MainWindow::doStuff(QByteArray & src, const quint8 id)
 	else if (data.indexOf("^&\r\n")!=-1)
 	{
 		src = "ok\r\n";
-		log("User "+ QString::number(id) + " Connected", LogType::Info);
+		mLogFunction("User "+ QString::number(id) + " Connected", LogType::Info);
 		return true;
 	}
 	else
 	{
 		src = "ok\r\n";
-		log(src , LogType::Received);
+		mLogFunction(src , LogType::Received);
 		//if(data == "") return true;
 		data.chop(2);
 		QFile a("temp.txt");
@@ -199,10 +199,10 @@ bool MainWindow::doStuff(QByteArray & src, const quint8 id)
 
 		a.close();
 
-		engine = new SQLInterpreter("temp.txt", "INSERT INTO orders(dishName, dishSouce, extraMeat, extraSalad, extraFries, extraCheese, otherExtras, takeAway, isComplete, orderDateTime) VALUES('::1', ::2, ::3, ::4, ::5, ::6, ::7, ::8, ::9, '::x10');");
-		QObject::connect(engine, &SQLInterpreter::saveSQL, this, &MainWindow::writeLocalSQL);
+		__mCSV2SQLengine = new SQLInterpreter("temp.txt", "INSERT INTO orders(dishName, dishSouce, extraMeat, extraSalad, extraFries, extraCheese, otherExtras, takeAway, isComplete, orderDateTime) VALUES('::1', ::2, ::3, ::4, ::5, ::6, ::7, ::8, ::9, '::x10');");
+		QObject::connect(__mCSV2SQLengine, &SQLInterpreter::saveSQL, this, &MainWindow::writeLocalSQL);
 
-		engine->save();
+		__mCSV2SQLengine->save();
 
 		//DEBUG!!!!!!!!!!!!
 
@@ -213,7 +213,7 @@ bool MainWindow::doStuff(QByteArray & src, const quint8 id)
 	return false;
 }
 
-void MainWindow::log(QString src, LogType t)
+void MainWindow::mLogFunction(QString src, LogType t)
 {
 	//cout << this << "logguje: "<< src;
 	QString temp = src;
@@ -262,7 +262,7 @@ void MainWindow::on_Button3_clicked()
 	QString pathToDb = db.databaseName();
 	cout << "Zapamiętano nazwę bazy";*/
 
-	Report dial(&db);
+	Report dial(&__mDataBase);
 	dial.setModal(true);
 	dial.show();
 	dial.topLevelWidget();
