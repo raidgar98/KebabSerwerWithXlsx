@@ -6,16 +6,9 @@
 #include <QMessageBox>
 
 #define cout qDebug()
-/*
 
-  INSERT INTO orders(dishName, dishSouce, extraMeat, extraSalad, extraFries, extraCheese,
-	otherExtras, takeAway, isComplete, orderDateTime)
-		VALUES("elo", 1, 1, 1, 1, 1, 1, 1, 1, CURRENT_TIMESTAMP);
-
-*/
 void MainWindow::mWriteLocalSQLFunction(const QString & src) noexcept
 {
-        cout<<"Sending SQL: "<<src;
 	if(!__mIsDataBaseReady) return;
 	__mDataBase.open();
 	QSqlQuery q(src);
@@ -51,8 +44,6 @@ void MainWindow::__mSyncFunction() noexcept
 			}
 			if(data[i] != '\r' && data[i] != '\n' ) q+=data[i]; else break;
 		}
-
-		//cout<<"Sending QUERRY: "<<q;
 		mWriteLocalSQLFunction(q);
 		mLogFunction(q, LogType::SQLSend);
 	}
@@ -64,7 +55,6 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui(new Ui::MainWindow)
 {
 	ui->setupUi(this);
-	cout<<"Step 1";
 	connect(__mSerwerPointer, &TCPSerwer::avaiableRead, this, &MainWindow::mAnswerNewDataFunction);
 
 	__mDataBase = QSqlDatabase::addDatabase("QSQLITE");
@@ -73,15 +63,12 @@ MainWindow::MainWindow(QWidget *parent) :
 	if(__mDataBase.open())
 	{
 		__mIsDataBaseReady=true;
-		cout << "Działa";
 	}
 	else
 	{
 		__mIsDataBaseReady=false;
-		cout << "Nie działa";
 	}
 	__mDataBase.close();
-	cout<<"Step 2";
 }
 
 MainWindow::~MainWindow()
@@ -164,22 +151,16 @@ void MainWindow::mAnswerNewDataFunction()
 
 bool MainWindow::mMakeDecissionFunction(QByteArray & src, const quint8 id)
 {
-	//cout << this << "Zaczynam robotę";
 	QByteArray data = src;
-	cout << "Data size: "<<data.size();
-	//log(src, LogType::Received);
 	if(data == "hello server \r\n\r\n\r\n")
 	{
 		src = "ok\r\n";
-		//log(src, LogType::Send);
 		return true;
 	}else if (data.indexOf("^\r\n")!=-1)
 	{
 		src = "\r\n";
 		mLogFunction("User "+ QString::number(id) + " Disconnected", LogType::Info);
-		//sync();
 		return false;
-
 	}
 	else if (data.indexOf("^&\r\n")!=-1)
 	{
@@ -191,30 +172,20 @@ bool MainWindow::mMakeDecissionFunction(QByteArray & src, const quint8 id)
 	{
 		src = "ok\r\n";
 		mLogFunction(src , LogType::Received);
-		//if(data == "") return true;
 		data.chop(2);
 		QFile a("temp.txt");
 		a.open(QFile::OpenModeFlag::WriteOnly);
 		a.write(data);
-
 		a.close();
-
 		__mCSV2SQLengine = new SQLInterpreter("temp.txt", "INSERT INTO orders(dishName, dishSouce, extraMeat, extraSalad, extraFries, extraCheese, otherExtras, takeAway, isComplete, orderDateTime) VALUES('::1', ::2, ::3, ::4, ::5, ::6, ::7, ::8, ::9, '::x10');");
 		QObject::connect(__mCSV2SQLengine, &SQLInterpreter::saveSQL, this, &MainWindow::mWriteLocalSQLFunction);
-
 		__mCSV2SQLengine->save();
-
-		//DEBUG!!!!!!!!!!!!
-
-		//QFile::remove("temp.txt");
-
 		return true;
 	}
 }
 
 void MainWindow::mLogFunction(QString src, LogType t)
 {
-	//cout << this << "logguje: "<< src;
 	QString temp = src;
 	src = "";
 	for(int i = 0; i < temp.length(); i++)
@@ -254,25 +225,9 @@ void MainWindow::on_checkBox_stateChanged(int arg1)
 
 void MainWindow::on_Button3_clicked()
 {
-	/*cout << "Rozpoczynam usuwanie bazy";
-	db.close();
-	cout << "Zamknięto Połączenia";
-	QString tempName= db.connectionName();
-	QString pathToDb = db.databaseName();
-	cout << "Zapamiętano nazwę bazy";*/
-
 	Report dial(&__mDataBase);
 	dial.setModal(true);
 	dial.show();
 	dial.topLevelWidget();
 	dial.exec();
-
-	cout << "Zamknięto Raport - okno. Wskrzeszanie połączenia";
-/*
-	//QSqlDatabase::removeDatabase(dial.db.connectionName());
-	cout << "Ładowanie sterowinka";
-	db = QSqlDatabase::database(tempName);
-	cout << "Ładowanie connection Stringa";
-	db.setDatabaseName(pathToDb);*/
-
 }

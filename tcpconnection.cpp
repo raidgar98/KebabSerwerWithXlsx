@@ -2,15 +2,9 @@
 
 #define cout qDebug()
 
-TcpConnection::TcpConnection(QObject *parent) : QObject(parent)
-{
-	qDebug()<<this<<" Created";
-}
+TcpConnection::TcpConnection(QObject *parent) : QObject(parent) {}
 
-TcpConnection::~TcpConnection()
-{
-	qDebug()<<this<<" Destoryed";
-}
+TcpConnection::~TcpConnection() {}
 
 void TcpConnection::mSetSocketFunction(QTcpSocket *socket)
 {
@@ -29,19 +23,13 @@ void TcpConnection::mSetSocketFunction(QTcpSocket *socket)
 
 void TcpConnection::wrtieData(QByteArray src)
 {
-	cout << this << "Sprawdzam dostępność...";
 	if(mIsReadyRead)
 	{
-		cout << this << "Wysyłam dane: "<< src;
 		mIsReadyRead = false;
 		_mSocket->write(src);
 		_mSocket->waitForBytesWritten();
-		cout << this << "Wysłano: "<<src;
 		mGetSocketFunction()->flush();
-		cout << this << "Czyszcze buffor";
 	}
-
-	//_getSocket()->waitForReadyRead();
 }
 
 QTcpSocket * const TcpConnection::mGetSocketFunction() const noexcept
@@ -51,67 +39,33 @@ QTcpSocket * const TcpConnection::mGetSocketFunction() const noexcept
 	return static_cast<QTcpSocket * const>(sender());
 }
 
-void TcpConnection::connected()
-{
-	if(!sender()) return;
+void TcpConnection::connected() { if(!sender()) return; }
 
-	qDebug()<<this<<" connected "<<sender();
-}
+void TcpConnection::disconnected() { if(!sender()) return; }
 
-void TcpConnection::disconnected()
-{
-	if(!sender()) return;
+void TcpConnection::bytesWritten(qint64 bytes) { if(!sender()) return; }
 
-	qDebug()<<this<<" disconnected "<<mGetSocketFunction();
-}
+void TcpConnection::statesChanged(QAbstractSocket::SocketState socketState) { if(!sender()) return; }
 
-void TcpConnection::bytesWritten(qint64 bytes)
-{
-	if(!sender()) return;
-
-	qDebug() << this << mGetSocketFunction() << " bytes written = "<<bytes;
-}
-
-void TcpConnection::statesChanged(QAbstractSocket::SocketState socketState)
-{
-	if(!sender()) return;
-
-	qDebug() << this << mGetSocketFunction() << " socket state changed to = "<<socketState;
-}
-
-void TcpConnection::error(QAbstractSocket::SocketError sockError)
-{
-	if(!sender()) return;
-
-	qDebug() << this << mGetSocketFunction() << " error = "<<sockError;
-}
+void TcpConnection::error(QAbstractSocket::SocketError sockError) {	if(!sender()) return; }
 
 void TcpConnection::readyRead()
 {
-	cout << this << "Jestem tutaj readyRead";
 	if(!sender()) return;
-	//while(!lastDataM.try_lock()) {;};
 	mLastData = mGetSocketFunction()->readAll();
 	QByteArray data(mLastData);
-	//lastDataM.unlock();
-
-	cout << this << "Pobrano: "<<data;
 
 	if(data == "^\r\n")
 	{
-		cout << this << "wykryto zamknięcie sesji";
 		emit _mSocket->disconnected();
 		emit avaiableData();
 		return;
 
 	}else if (data == "hello server \r\n\r\n\r\n")
 	{
-		cout << this << "wykryto rozpoczęcie sesji";
 		mLastData = "^&\r\n";
 	}
 
 	mIsReadyRead = true;
 	emit avaiableData();
 }
-
-

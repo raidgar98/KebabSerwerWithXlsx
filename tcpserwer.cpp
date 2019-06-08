@@ -2,15 +2,9 @@
 
 #define cout qDebug()
 
-TCPSerwer::TCPSerwer(QObject *parent) : QTcpServer (parent)
-{
-    cout << this <<"Created on: " << QThread::currentThread();
-}
+TCPSerwer::TCPSerwer(QObject *parent) : QTcpServer (parent) { }
 
-TCPSerwer::~TCPSerwer()
-{
-    cout<<this<<"Destroyed";
-}
+TCPSerwer::~TCPSerwer() {}
 
 bool TCPSerwer::listen(const QHostAddress &address, quint16 port)
 {
@@ -30,12 +24,10 @@ bool TCPSerwer::listen(const QHostAddress &address, quint16 port)
     _mThread->start();
 
     return true;
-
 }
 
 void TCPSerwer::close()
 {
-    cout << this << "Closing server";
     emit finished();
     QTcpServer::close();
 }
@@ -54,73 +46,57 @@ qint16 TCPSerwer::port()
 
 void TCPSerwer::incomingConnection(qintptr decriptor)
 {
-    cout<<this<<"attempt to accept connection" << decriptor;
-//TO DO: IDManager TcpConnection -> TcpSerwer
     TcpConnection * conn = new TcpConnection(nullptr);
-
     accept(decriptor, conn);
 }
 
 void TCPSerwer::accept(qintptr descriptor, TcpConnection *conn)
 {
-    cout<<this<<"accepting the connection" << descriptor;
-	conn->id = manager.getNew();
+	conn->id = manager.mGetNewFunction();
     conn->moveToThread(_mThread);
     emit accepting(descriptor, conn);
 }
 
 void TCPSerwer::complete()
 {
-    if(!_mThread)
-    {
-        qWarning()<<this<<" exitting complete, there was no thread";
-        return;
-    }
-
-    cout<< this << "complete called, destroying thread";
+	if(!_mThread) return;
 
     delete _mConnections;
 
-    cout<<this<<"Quitting Thread";
-    _mThread->quit();
+	_mThread->quit();
     _mThread->wait();
 
     delete _mThread;
-
-    cout<<this<<"Thread deleted";
-
 }
 
 void TCPSerwer::freshDataArrive()
 {
-	cout << this << "Data arrived";
 	dataQueueRead.push_back(QPair<TcpConnection*, QByteArray>(_mConnections->mTagData.front()));
 	_mConnections->mTagData.pop_front();
 	emit avaiableRead();
 }
 
-bool IDManager::__validate(const quint8 id) const noexcept
+bool IDManager::__mValidateFunction(const quint8 id) const noexcept
 {
 	return id < 10;
 }
 
-void IDManager::release(const quint8 id) noexcept
+void IDManager::mReleaseFunction(const quint8 id) noexcept
 {
-	if(!__validate(id)) return;
+	if(!__mValidateFunction(id)) return;
 	__mAvaiableIDs[id] = false;
 }
 
-bool IDManager::isFree(const quint8 id) const noexcept
+bool IDManager::mIsFreeFunction(const quint8 id) const noexcept
 {
-	if(!__validate(id)) return false;
+	if(!__mValidateFunction(id)) return false;
 	return __mAvaiableIDs[id];
 }
 
-bool IDManager::reserve(const quint8 id) noexcept
+bool IDManager::mReserveFunctions(const quint8 id) noexcept
 {
-	if(!__validate(id)) return false;
-	if(__mAvaiableIDs[id])
-		return false;
+	if(!__mValidateFunction(id)) return false;
+	if(__mAvaiableIDs[id]) return false;
 	else
 	{
 		__mAvaiableIDs[id] = true;
@@ -128,7 +104,7 @@ bool IDManager::reserve(const quint8 id) noexcept
 	}
 }
 
-quint8 IDManager::getNew() noexcept
+quint8 IDManager::mGetNewFunction() noexcept
 {
 	for(quint8 i = 0; i < 10; i++)
 	{
@@ -144,5 +120,5 @@ quint8 IDManager::getNew() noexcept
 
 void IDManager::releaseSlot(quint8 ID)
 {
-	release(ID);
+	mReleaseFunction(ID);
 }

@@ -13,8 +13,6 @@
 #include "xlsxworksheet.h"
 #include "xlsxcellformula.h"
 
-class Worker;
-
 namespace Ui {
 class Report;
 }
@@ -36,8 +34,6 @@ public:
 	void onLoad() noexcept;
 
 	QThread myThread;
-
-	Worker* worker;
 
 	QString dbName, dbPath;
 

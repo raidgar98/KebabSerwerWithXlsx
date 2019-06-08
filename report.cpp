@@ -21,7 +21,6 @@ Report::Report(QSqlDatabase* ptr,  QDialog *parent) :
 
 Report::~Report()
 {
-	//QSqlDatabase::removeDatabase(db->connectionName());
 	delete ui;
 }
 
@@ -36,7 +35,6 @@ double Report::getValueOn(const QString src) noexcept
 	q1.next();
 	return (q1.value(0).toDouble());
 }
-
 
 void Report::onLoad() noexcept
 {
@@ -286,6 +284,7 @@ QString Report::translateName(const QString src) const noexcept
 	if( src == "Extras") return "Inne Dodatki";
 	if( src == "TakeAway") return "Na Wynos";
 	if( src == "Temp") return "Potrawa Tymczasowa";
+	//TO DO: Standarize names
 
 }
 
@@ -326,12 +325,8 @@ QString Report::translateSouce(const quint8 src) const noexcept
 	}
 }
 
-
-
 void Report::on_Button1_clicked()
 {
-	//QSqlDatabase::removeDatabase(db->connectionName());
-
 	QString path = QFileDialog::getExistingDirectory(this);
 	if(path == QString()) return;
 	ui->Button1->setEnabled(false);

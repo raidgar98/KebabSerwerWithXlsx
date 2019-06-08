@@ -2,7 +2,7 @@
 
 #include <list>
 
-void SQLInterpreter::__compile(const char separator, std::list<QString>& paramList, QString& query, const std::string & buff) const noexcept
+void SQLInterpreter::__mCompileFunction(const char separator, std::list<QString>& paramList, QString& query, const std::string & buff) const noexcept
 {
 	//Starting new line so make it to defaults
 	QString temp = "";
@@ -150,7 +150,7 @@ bool SQLInterpreter::save()
 		query = patternSQL;
 
 		//Processing input
-		__compile(separator, paramList, query, buff);
+		__mCompileFunction(separator, paramList, query, buff);
 
 		//Save it
 		emit saveSQL(query);
@@ -164,7 +164,7 @@ bool SQLInterpreter::save()
 
 }
 
-QString SQLInterpreter::example()
+QString SQLInterpreter::__mExampleFunction()
 {
 	//cout << this << "Starting example";
 	//Open locations
@@ -201,7 +201,7 @@ QString SQLInterpreter::example()
 	if(buff[buff.size()-1] != separator) buff+=separator;
 
 	//Processing input
-	__compile(separator, paramList, query, buff);
+	__mCompileFunction(separator, paramList, query, buff);
 
 	//Closing stuff
 	input.close();
@@ -211,7 +211,7 @@ QString SQLInterpreter::example()
 
 }
 
-size_t SQLInterpreter::howManyColumns() const
+size_t SQLInterpreter::__mAmountOfColumnsFunction() const
 {
 	return __mSymbols.size();
 }

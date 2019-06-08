@@ -23,12 +23,10 @@ void TcpConnections::_mRemoveSocketFunction(QTcpSocket *socket)
 
 	if(socket->isOpen())
     {
-		//cout<<this<<"removeSocket: odłączam: "<<socket;
         socket->disconnect();
         socket->close();
     }
 
-	//cout << this << "removed.";
     _mConnection.remove(socket);
 
 	socket->deleteLater();
@@ -39,20 +37,16 @@ void TcpConnections::_mRemoveSocketFunction(QTcpSocket *socket)
 void TcpConnections::disconnected()
 {
     if(!sender()) return;
-	//cout<<this<<" disconnecting socket: " << sender();
 
     QTcpSocket * sck = static_cast<QTcpSocket*>(sender());
     if(!sck) return;
-	cout <<this<< "Usuwam: "<<sck;
 	emit releaseID(_mConnection.value(sck)->id);
     _mRemoveSocketFunction(sck);
-	cout <<this<< "Usunięto";
 }
 
 void TcpConnections::error(QAbstractSocket::SocketError sckErr)
 {
     if(!sender()) return;
-	//cout<<this<< sender() << " err: "<<sckErr;
 
     QTcpSocket * sck = static_cast<QTcpSocket*>(sender());
     if(!sck) return;
@@ -63,28 +57,20 @@ void TcpConnections::error(QAbstractSocket::SocketError sckErr)
 void TcpConnections::datasInside()
 {
     TcpConnection * con =  static_cast<TcpConnection*>(sender());
-	//while(!con->lastDataM.try_lock()) {;}
 	mTagData.push_back(QPair<TcpConnection* , QByteArray>(con,  con->mLastData));
     emit freshData();
 }
 
-void TcpConnections::start()
-{
-    cout<<this<<" starting on: "<<QThread::currentThread();
-}
+void TcpConnections::start() {}
 
 void TcpConnections::quit()
 {
     if(!sender()) return;
 
-    cout<<this<<" Quitting...";
-
     for(auto var = _mConnection.begin(); var != _mConnection.end(); var++)
     {
-        cout<<"Quitting socket: "<<var.key();
         _mRemoveSocketFunction(var.key());
     }
-    cout<<this<<" Quitting finished.";
 
     emit finished();
 }
@@ -93,11 +79,8 @@ void TcpConnections::accept(qintptr handle, TcpConnection *connection)
 {
     QTcpSocket * sck = new QTcpSocket(this);
 
-    cout<<this<<" handle: "<<handle;
-
     if(!sck->setSocketDescriptor(handle))
     {
-        qWarning()<<this<<" could not accept connection: "<<handle;
         connection->deleteLater();
         return;
     }
@@ -111,8 +94,5 @@ void TcpConnections::accept(qintptr handle, TcpConnection *connection)
 
     _mConnection.insert(sck, connection);
 
-    cout<<this << "clients = "<< _mConnection.count();
-
     emit sck->connected();
 }
-
