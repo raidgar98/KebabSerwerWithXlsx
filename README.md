@@ -29,6 +29,7 @@ Thinks To Do with Highest Priority:
 
 	- Solve problem of GUI translation (now it's only in Polish)
 
+	- Add auto-create database if not detected feature.
 
 
 Things To Do with Normal Priority:
