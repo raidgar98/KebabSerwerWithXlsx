@@ -32,7 +32,7 @@ public:
 	QByteArray mLastData;
 
 	//Getter for _mSocket
-	QTcpSocket * const mGetSocketFunction() const noexcept;
+	QTcpSocket * const mGetSocketFunction();
 
 protected:
 
