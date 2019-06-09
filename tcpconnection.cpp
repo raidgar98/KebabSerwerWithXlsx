@@ -32,7 +32,7 @@ void TcpConnection::wrtieData(QByteArray src)
 	}
 }
 
-QTcpSocket * const TcpConnection::mGetSocketFunction() const noexcept
+QTcpSocket * const TcpConnection::mGetSocketFunction()
 {
 	if(!sender()) return nullptr;
 

@@ -6,453 +6,38 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>774</width>
-    <height>764</height>
+    <width>506</width>
+    <height>306</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="4" column="0">
-    <layout class="QGridLayout" name="gridLayout_2">
+   <item row="0" column="0">
+    <widget class="QCalendarWidget" name="Calendar1">
+     <property name="focusPolicy">
+      <enum>Qt::NoFocus</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <layout class="QFormLayout" name="formLayout">
+     <property name="sizeConstraint">
+      <enum>QLayout::SetNoConstraint</enum>
+     </property>
      <item row="0" column="0">
-      <layout class="QHBoxLayout" name="horizontalLayout">
-       <item>
-        <layout class="QFormLayout" name="formLayout">
-         <property name="verticalSpacing">
-          <number>1</number>
-         </property>
-         <item row="0" column="0">
-          <widget class="QLabel" name="label_16">
-           <property name="text">
-            <string>Duże Ciasto</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="label_14">
-           <property name="text">
-            <string>Małe Ciasto</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="label_26">
-           <property name="text">
-            <string>Duża Bułka</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="0">
-          <widget class="QLabel" name="label_8">
-           <property name="text">
-            <string>Mała Bułka</string>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="0">
-          <widget class="QLabel" name="label_4">
-           <property name="text">
-            <string>Duża Pita</string>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="0">
-          <widget class="QLabel" name="label_15">
-           <property name="text">
-            <string>Mała Pita</string>
-           </property>
-          </widget>
-         </item>
-         <item row="6" column="0">
-          <widget class="QLabel" name="label_6">
-           <property name="text">
-            <string>Duży Kubełek</string>
-           </property>
-          </widget>
-         </item>
-         <item row="7" column="0">
-          <widget class="QLabel" name="label_2">
-           <property name="text">
-            <string>Mały Kubełek</string>
-           </property>
-          </widget>
-         </item>
-         <item row="8" column="0">
-          <widget class="QLabel" name="label_9">
-           <property name="text">
-            <string>Duże Vege Grek</string>
-           </property>
-          </widget>
-         </item>
-         <item row="9" column="0">
-          <widget class="QLabel" name="label_13">
-           <property name="text">
-            <string>Małe Vege Grek</string>
-           </property>
-          </widget>
-         </item>
-         <item row="10" column="0">
-          <widget class="QLabel" name="label_11">
-           <property name="text">
-            <string>Vege Kebab Ciast</string>
-           </property>
-          </widget>
-         </item>
-         <item row="11" column="0">
-          <widget class="QLabel" name="label_7">
-           <property name="text">
-            <string>Vege Kebab Bułka</string>
-           </property>
-          </widget>
-         </item>
-         <item row="12" column="0">
-          <widget class="QLabel" name="label_17">
-           <property name="text">
-            <string>BBQ Warzyw. Ciast.</string>
-           </property>
-          </widget>
-         </item>
-         <item row="13" column="0">
-          <widget class="QLabel" name="label_12">
-           <property name="text">
-            <string>BBQ Warzyw. Bułka</string>
-           </property>
-          </widget>
-         </item>
-         <item row="14" column="0">
-          <widget class="QLabel" name="label_31">
-           <property name="text">
-            <string>Duże Frytki</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QDoubleSpinBox" name="DuzCia">
-           <property name="suffix">
-            <string> PLN</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QDoubleSpinBox" name="MalCia">
-           <property name="suffix">
-            <string> PLN</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1">
-          <widget class="QDoubleSpinBox" name="DuzBul">
-           <property name="suffix">
-            <string> PLN</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="1">
-          <widget class="QDoubleSpinBox" name="MalBul">
-           <property name="suffix">
-            <string> PLN</string>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="1">
-          <widget class="QDoubleSpinBox" name="DuzPit">
-           <property name="suffix">
-            <string> PLN</string>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="1">
-          <widget class="QDoubleSpinBox" name="MalPit">
-           <property name="suffix">
-            <string> PLN</string>
-           </property>
-          </widget>
-         </item>
-         <item row="6" column="1">
-          <widget class="QDoubleSpinBox" name="DuzKub">
-           <property name="suffix">
-            <string> PLN</string>
-           </property>
-          </widget>
-         </item>
-         <item row="7" column="1">
-          <widget class="QDoubleSpinBox" name="MalKub">
-           <property name="suffix">
-            <string> PLN</string>
-           </property>
-          </widget>
-         </item>
-         <item row="8" column="1">
-          <widget class="QDoubleSpinBox" name="DuzVegGrek">
-           <property name="suffix">
-            <string> PLN</string>
-           </property>
-          </widget>
-         </item>
-         <item row="9" column="1">
-          <widget class="QDoubleSpinBox" name="MalVegGrek">
-           <property name="suffix">
-            <string> PLN</string>
-           </property>
-          </widget>
-         </item>
-         <item row="10" column="1">
-          <widget class="QDoubleSpinBox" name="VegKebCiast">
-           <property name="suffix">
-            <string> PLN</string>
-           </property>
-          </widget>
-         </item>
-         <item row="11" column="1">
-          <widget class="QDoubleSpinBox" name="VegKebBul">
-           <property name="suffix">
-            <string> PLN</string>
-           </property>
-          </widget>
-         </item>
-         <item row="12" column="1">
-          <widget class="QDoubleSpinBox" name="BBQCia">
-           <property name="suffix">
-            <string> PLN</string>
-           </property>
-          </widget>
-         </item>
-         <item row="13" column="1">
-          <widget class="QDoubleSpinBox" name="BBQBul">
-           <property name="suffix">
-            <string> PLN</string>
-           </property>
-          </widget>
-         </item>
-         <item row="14" column="1">
-          <widget class="QDoubleSpinBox" name="DuzFryt">
-           <property name="suffix">
-            <string> PLN</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <layout class="QFormLayout" name="formLayout_2">
-         <property name="verticalSpacing">
-          <number>1</number>
-         </property>
-         <item row="0" column="0">
-          <widget class="QLabel" name="label_20">
-           <property name="text">
-            <string>Małe Frytki</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="label_22">
-           <property name="text">
-            <string>Zap. Wiejska</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="label_10">
-           <property name="text">
-            <string>Zap. Diabelska</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="0">
-          <widget class="QLabel" name="label_18">
-           <property name="text">
-            <string>Zap. Vege</string>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="0">
-          <widget class="QLabel" name="label_25">
-           <property name="text">
-            <string>Zap. Szpinakowa</string>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="0">
-          <widget class="QLabel" name="label_23">
-           <property name="text">
-            <string>Zap. Dostosowana</string>
-           </property>
-          </widget>
-         </item>
-         <item row="6" column="0">
-          <widget class="QLabel" name="label_27">
-           <property name="text">
-            <string>Tymczasowa Potr.</string>
-           </property>
-          </widget>
-         </item>
-         <item row="7" column="0">
-          <widget class="QLabel" name="label_30">
-           <property name="text">
-            <string>Pierwszy Sos</string>
-           </property>
-          </widget>
-         </item>
-         <item row="8" column="0">
-          <widget class="QLabel" name="label_28">
-           <property name="text">
-            <string>Drugi Sos</string>
-           </property>
-          </widget>
-         </item>
-         <item row="9" column="0">
-          <widget class="QLabel" name="label_29">
-           <property name="text">
-            <string>Dod. Mięso</string>
-           </property>
-          </widget>
-         </item>
-         <item row="10" column="0">
-          <widget class="QLabel" name="label_3">
-           <property name="text">
-            <string>Dod. Sałatki</string>
-           </property>
-          </widget>
-         </item>
-         <item row="11" column="0">
-          <widget class="QLabel" name="label_5">
-           <property name="text">
-            <string>Dod. Frytki</string>
-           </property>
-          </widget>
-         </item>
-         <item row="12" column="0">
-          <widget class="QLabel" name="label_21">
-           <property name="text">
-            <string>Dod. Ser</string>
-           </property>
-          </widget>
-         </item>
-         <item row="13" column="0">
-          <widget class="QLabel" name="label_19">
-           <property name="text">
-            <string>Inne Dodatki</string>
-           </property>
-          </widget>
-         </item>
-         <item row="14" column="0">
-          <widget class="QLabel" name="label_24">
-           <property name="text">
-            <string>Na Wynos</string>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="1">
-          <widget class="QDoubleSpinBox" name="ZapCust">
-           <property name="suffix">
-            <string> PLN</string>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="1">
-          <widget class="QDoubleSpinBox" name="ZapSzpin">
-           <property name="suffix">
-            <string> PLN</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="1">
-          <widget class="QDoubleSpinBox" name="ZapVeg">
-           <property name="suffix">
-            <string> PLN</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1">
-          <widget class="QDoubleSpinBox" name="ZapDiab">
-           <property name="suffix">
-            <string> PLN</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QDoubleSpinBox" name="ZapWiej">
-           <property name="suffix">
-            <string> PLN</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QDoubleSpinBox" name="MalFryt">
-           <property name="suffix">
-            <string> PLN</string>
-           </property>
-          </widget>
-         </item>
-         <item row="6" column="1">
-          <widget class="QDoubleSpinBox" name="TempDish">
-           <property name="suffix">
-            <string> PLN</string>
-           </property>
-          </widget>
-         </item>
-         <item row="7" column="1">
-          <widget class="QDoubleSpinBox" name="FirstSouce">
-           <property name="suffix">
-            <string> PLN</string>
-           </property>
-          </widget>
-         </item>
-         <item row="8" column="1">
-          <widget class="QDoubleSpinBox" name="SecondSouce">
-           <property name="suffix">
-            <string> PLN</string>
-           </property>
-          </widget>
-         </item>
-         <item row="9" column="1">
-          <widget class="QDoubleSpinBox" name="Meat">
-           <property name="suffix">
-            <string> PLN</string>
-           </property>
-          </widget>
-         </item>
-         <item row="10" column="1">
-          <widget class="QDoubleSpinBox" name="Salad">
-           <property name="suffix">
-            <string> PLN</string>
-           </property>
-          </widget>
-         </item>
-         <item row="11" column="1">
-          <widget class="QDoubleSpinBox" name="Fries">
-           <property name="suffix">
-            <string> PLN</string>
-           </property>
-          </widget>
-         </item>
-         <item row="12" column="1">
-          <widget class="QDoubleSpinBox" name="Cheese">
-           <property name="suffix">
-            <string> PLN</string>
-           </property>
-          </widget>
-         </item>
-         <item row="13" column="1">
-          <widget class="QDoubleSpinBox" name="Extras">
-           <property name="suffix">
-            <string> PLN</string>
-           </property>
-          </widget>
-         </item>
-         <item row="14" column="1">
-          <widget class="QDoubleSpinBox" name="TakeAway">
-           <property name="suffix">
-            <string> PLN</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-      </layout>
+      <widget class="QComboBox" name="comboBox">
+       <property name="minimumSize">
+        <size>
+         <width>300</width>
+         <height>0</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QDoubleSpinBox" name="doubleSpinBox"/>
      </item>
     </layout>
    </item>
@@ -463,7 +48,7 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="0">
+   <item row="2" column="0">
     <widget class="QLabel" name="pathOfSave">
      <property name="text">
       <string>Miejsce Generowania Raportu</string>
@@ -473,54 +58,10 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="0">
-    <widget class="QCalendarWidget" name="Calendar1">
-     <property name="focusPolicy">
-      <enum>Qt::NoFocus</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0">
-    <widget class="QProgressBar" name="Bar1">
-     <property name="value">
-      <number>0</number>
-     </property>
-    </widget>
-   </item>
   </layout>
  </widget>
  <tabstops>
   <tabstop>Button1</tabstop>
-  <tabstop>DuzCia</tabstop>
-  <tabstop>MalCia</tabstop>
-  <tabstop>DuzBul</tabstop>
-  <tabstop>MalBul</tabstop>
-  <tabstop>DuzPit</tabstop>
-  <tabstop>MalPit</tabstop>
-  <tabstop>DuzKub</tabstop>
-  <tabstop>MalKub</tabstop>
-  <tabstop>DuzVegGrek</tabstop>
-  <tabstop>MalVegGrek</tabstop>
-  <tabstop>VegKebCiast</tabstop>
-  <tabstop>VegKebBul</tabstop>
-  <tabstop>BBQCia</tabstop>
-  <tabstop>BBQBul</tabstop>
-  <tabstop>DuzFryt</tabstop>
-  <tabstop>MalFryt</tabstop>
-  <tabstop>ZapWiej</tabstop>
-  <tabstop>ZapDiab</tabstop>
-  <tabstop>ZapVeg</tabstop>
-  <tabstop>ZapSzpin</tabstop>
-  <tabstop>ZapCust</tabstop>
-  <tabstop>TempDish</tabstop>
-  <tabstop>FirstSouce</tabstop>
-  <tabstop>SecondSouce</tabstop>
-  <tabstop>Meat</tabstop>
-  <tabstop>Salad</tabstop>
-  <tabstop>Fries</tabstop>
-  <tabstop>Cheese</tabstop>
-  <tabstop>Extras</tabstop>
-  <tabstop>TakeAway</tabstop>
   <tabstop>Calendar1</tabstop>
  </tabstops>
  <resources/>

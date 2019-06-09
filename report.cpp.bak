@@ -6,8 +6,6 @@
 #include <iostream>
 #include <string>
 #include <QDebug>
-#include <QFormLayout>
-
 
 #define cout qDebug()
 
@@ -40,69 +38,6 @@ double Report::getValueOn(const QString src) noexcept
 
 void Report::onLoad() noexcept
 {
-
-	db->open();
-	QSqlQuery q1("SELECT COUNT(*) FROM prices;");
-	q1.exec();
-	db->close();
-	q1.next();
-	const quint16 countPrices = static_cast<quint16>(q1.value(0).toInt());
-	quint16 counter = 1;
-
-	cout << countPrices << " " << counter;
-
-
-	//bool switcher = false;
-
-	while (counter != countPrices)
-	{
-		QString preQuerry = "SELECT * FROM prices WHERE idPrice=::1;";
-		preQuerry.replace("::1", QString::number(counter));
-		counter++;
-
-		db->open();
-		QSqlQuery q(preQuerry);
-		q.exec();
-		db->close();
-
-		const quint8 namePos = static_cast<quint8>(q.record().indexOf("name"));
-		const quint8 valPos = static_cast<quint8>(q.record().indexOf("val"));
-		const quint8 fullNamePos = static_cast<quint8>(q.record().indexOf("fullName"));
-		const quint8 isExtraPos = static_cast<quint8>(q.record().indexOf("isExtra"));
-
-		q.next();
-
-		__mForms.push_back(DBresult(q.value(namePos).toString(), q.value(fullNamePos).toString(), q.value(valPos).toDouble(), q.value(isExtraPos).toBool()));
-		ui->comboBox->addItem(__mForms.back().fullName);
-		myValues[__mForms.back().name] = __mForms.back().val;
-
-		/*
-		cout << "Elo1";
-
-		ui->form1->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
-		cout << "Elo2";
-		ui->form2->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
-		cout << "Elo3";
-
-		if(switcher)
-		{
-			ui->form1->insertRow(0, __mForms.back().fullName, __mForms.back().dblSpin);
-			cout << "Elo4";
-		}
-		else
-		{
-			cout<<"Bum";
-			ui->form2->insertRow(0, __mForms.back().fullName, __mForms.back().dblSpin);
-			cout << "Elo5";
-		}
-
-		//QObject::connect(__mForms.back().dblSpin, qOverload<double>(&QDoubleSpinBox::valueChanged), this, &Report::on_SpinBox_value_Changed);
-
-		switcher = !switcher;*/
-	}
-
-
-	/*
 	ui->DuzCia->setValue(getValueOn("DuzCia"));
 	myValues["DuzCia"] = ui->DuzCia->value();
 	ui->MalCia->setValue(getValueOn("MalCia"));
@@ -163,7 +98,6 @@ void Report::onLoad() noexcept
 	myValues["Extras"] = ui->Extras->value();
 	ui->TakeAway->setValue(getValueOn("TakeAway"));
 	myValues["TakeAway"] = ui->TakeAway->value();
-	*/
 }
 
 void Report::doStuff()
@@ -369,7 +303,7 @@ QString Report::translateName(const QString src) const noexcept
 
 double Report::translateValue(const QString src) const noexcept
 {
-/*	if( src == "DuzCia") return ui->DuzCia->value();
+	if( src == "DuzCia") return ui->DuzCia->value();
 	if( src == "MalCia") return ui->MalCia->value();
 	if( src == "DuzBul") return ui->DuzBul->value();
 	if( src == "MalBul") return ui->MalBul->value();
@@ -391,11 +325,6 @@ double Report::translateValue(const QString src) const noexcept
 	if( src == "ZapSzp") return ui->ZapSzpin->value();
 	if( src == "ZapDos") return ui->ZapCust->value();
 	if( src == "Temp") return ui->TempDish->value();
-	*/
-	for(auto var : __mForms)
-	{
-		if(var.name == src) return var.val;
-	}
 }
 
 QString Report::translateSouce(const quint8 src) const noexcept
@@ -421,54 +350,4 @@ void Report::on_Button1_clicked()
 	a.show();
 	a.exec();
 	doStuff();
-}
-/*
-void Report::on_SpinBox_value_Changed(double d)
-{
-	QDoubleSpinBox * temp = static_cast<QDoubleSpinBox*>(sender());
-	DBresult * res = nullptr;
-
-	for(auto it = __mForms.begin(); it != __mForms.end(); it++)
-	{
-		if((it->dblSpin) == temp)
-		{
-			res = &(*it);
-			break;
-		}
-	}
-
-	QString quer = "UPDATE prices SET val=::1 WHERE name='::2';";
-	quer.replace("::1", QString::number(d));
-	quer.replace("::2", res->name);
-	db->open();
-	QSqlQuery q(quer);
-	q.exec();
-	db->close();
-
-	res->val = d;
-}
-*/
-
-void Report::on_comboBox_currentIndexChanged(const QString &arg1)
-{
-	for(auto var : __mForms)
-	{
-		if(var.fullName == arg1)
-		{
-			ui->doubleSpinBox->setValue(var.val);
-			ui->comboBox->setToolTip(var.name);
-			return;
-		}
-	}
-}
-
-void Report::on_doubleSpinBox_valueChanged(double arg1)
-{
-	QString quer = "UPDATE prices SET val=::1 WHERE name='::2';";
-	quer.replace("::1", QString::number(arg1));
-	quer.replace("::2", ui->comboBox->toolTip());
-	db->open();
-	QSqlQuery q(quer);
-	q.exec();
-	db->close();
 }
