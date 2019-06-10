@@ -37,7 +37,7 @@ public:
     {
         if (Report->objectName().isEmpty())
             Report->setObjectName(QString::fromUtf8("Report"));
-        Report->resize(774, 764);
+        Report->resize(506, 306);
         gridLayout = new QGridLayout(Report);
         gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
         Calendar1 = new QCalendarWidget(Report);

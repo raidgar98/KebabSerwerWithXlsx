@@ -5,37 +5,37 @@
 #include <QtSql/QSqlDatabase>
 #include <QtSql/QSqlQuery>
 
-#include <QMap>
-#include <QThread>
 #include "xlsxdocument.h"
 #include "xlsxformat.h"
 #include "xlsxworksheet.h"
 #include "xlsxcellformula.h"
-#include <QDoubleSpinBox>
 
 #include <list>
+#include <map>
 
 namespace Ui {
 class Report;
 }
 
+//Class responsible for report UI and is engine for xlsx report generating
 class Report : public QDialog
 {
 	Q_OBJECT
 
 public:
 
-
+	//Class responsible for holding information about types of avaiable extras and dishes
 	class DBresult
 	{
 	public:
 
+		//varriables with exact same name as from database
 		QString name, fullName;
 		double val;
 		bool isExtra = 0;
 		//QDoubleSpinBox * dblSpin;
 
-
+		//Constructor
 		DBresult(const QString src1, const QString src2, const double val1, const bool Extra)
 			:name{src1}, fullName{src2}, val{val1}, isExtra{Extra}
 		{
@@ -52,9 +52,11 @@ public:
 
 	};
 
+	//Pointer on database connection, catched from mainwindow
 	QSqlDatabase* db ;
 
-	QMap<QString, double> myValues;
+	//Holds handy information about values. In future can be optimalized by changing into __mForms, and deleting this one
+	std::map<QString, double> myValues;
 
 	std::list<DBresult> __mForms;
 
@@ -65,10 +67,9 @@ public:
 
 	void onLoad() noexcept;
 
-	QThread myThread;
-
 	QString dbName, dbPath;
 
+	//This method has to be customize, how you want to generate xlsx
 	void doStuff();
 
 	QString translateName(const QString src) const noexcept;

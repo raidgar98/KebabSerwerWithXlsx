@@ -168,6 +168,7 @@ void Report::onLoad() noexcept
 
 void Report::doStuff()
 {
+	//First make micromapping of data
 	db->open();
 
 	QSqlQuery q("SELECT * FROM orders WHERE orderID=1;");
@@ -186,9 +187,9 @@ void Report::doStuff()
 	const quint8 takeAway = static_cast<quint8>(q.record().indexOf("takeAway"));
 	const quint8 orderDateTime = static_cast<quint8>(q.record().indexOf("orderDateTime"));
 
-	QString getIDtemplate = "SELECT ::0(orderID) FROM orders WHERE orderDateTime>'::1' AND orderDateTime<'::2';";
-	getIDtemplate.replace("::1", ui->Calendar1->selectedDate().addDays(-1).toString("yyyy-MM-dd"));
-	getIDtemplate.replace("::2", ui->Calendar1->selectedDate().addDays(1).toString("yyyy-MM-dd"));
+	//Because of getting many values at once not working, so i get minimum and maximum id and next i get them one by one, simply incrementing
+	QString getIDtemplate = "SELECT ::0(orderID) FROM orders WHERE orderDateTime LIKE '::1%';";
+	getIDtemplate.replace("::1", ui->Calendar1->selectedDate().toString("yyyy-MM-dd"));
 	QString getIdMin = getIDtemplate;
 	QString getIdMax = getIDtemplate;
 	getIdMin.replace("::0", "MIN");
@@ -213,8 +214,11 @@ void Report::doStuff()
 	q1.clear();
 	q2.clear();
 
+	//Beginning of raport generation
 	QXlsx::Document xlsx;
 	xlsx.addSheet("Raport");
+
+	//Setting formats
 	QXlsx::Format format;
 	QXlsx::Format formatCALK;
 	QXlsx::Format formatSTR;
@@ -232,6 +236,7 @@ void Report::doStuff()
 	formatFINAL.setNumberFormat("#00.00");
 	formatFINAL.setHorizontalAlignment(QXlsx::Format::HorizontalAlignment::AlignHCenter);
 
+	//Writing headers of columns
 	xlsx.write(1,1,"ID zamówienia");
 	xlsx.write(1,2, "Nazwa Dania");
 	xlsx.write(1,3, "Rodzaj sosu");
@@ -246,6 +251,7 @@ void Report::doStuff()
 
 	int lastRecord = maxID - minID + 2;
 
+	//Setting summary
 	xlsx.write((lastRecord)+1, 1, "Ilość pozycji",formatSTR);
 	xlsx.write((lastRecord)+2, 1, QString::number(maxID-minID+1).toInt(), formatCALK);
 
@@ -276,7 +282,7 @@ void Report::doStuff()
 	xlsx.write((lastRecord)+1, 10, "PODSUMOWANIE",formatSTR);
 	xlsx.write((lastRecord)+2, 10, "=SUMA(J2:J"+QString::number(lastRecord)+") + SUMA(C"+QString::number(lastRecord+2)+":I"+QString::number(lastRecord+2)+")", formatFINAL);
 
-
+	//Template for querry for selecting record one by one
 	const QString selectTemplate = "SELECT * FROM orders WHERE orderID=::0;";
 	int licznik = minID;
 	int row = 2;
@@ -291,8 +297,10 @@ void Report::doStuff()
 		db->close();
 		actq.next();
 
+		//If empty just continue
 		if(actq.value(orderID).isNull()) continue;
 
+		//Filling columns and rows
 		xlsx.write(row,1,actq.value(orderID).toInt(),formatCALK);
 		xlsx.write(row,2, translateName(actq.value(dishName).toString()), formatSTR);
 		xlsx.write(row,3, translateSouce(static_cast<quint8>(actq.value(dishSouce).toInt())),formatSTR);
@@ -310,6 +318,7 @@ void Report::doStuff()
 		actq.clear();
 	}
 
+	//Saving and displaying info about success
 	xlsx.saveAs(ui->pathOfSave->text());
 	ui->Button1->setEnabled(true);
 	QMessageBox a(QMessageBox::Icon::Information, "Zakończono", "Dokumnent: \n"+ ui->pathOfSave->text() + "\n został wygenerowany.");
