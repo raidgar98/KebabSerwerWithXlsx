@@ -95,7 +95,7 @@ private slots:
 	//Activated if user change smthing in comboBox
 	void on_comboBox_currentIndexChanged(const QString &arg1);
 
-	//Activated if somebody change value, use sql (FIX ME!!!! [report.cpp 42])
+	//Activated if somebody change value, use sql
 	void on_doubleSpinBox_valueChanged(double arg1);
 
 private:

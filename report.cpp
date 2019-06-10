@@ -8,7 +8,6 @@
 #include <QDebug>
 #include <QFormLayout>
 
-
 #define cout qDebug()
 
 Report::Report(QSqlDatabase* ptr,  QDialog *parent) :
@@ -26,7 +25,9 @@ Report::~Report()
 
 double Report::getValueOn(const QString src) noexcept
 {
-
+/*
+ //Old way
+ *
 	QString orginal = "SELECT val FROM prices WHERE name='::0';";
 	QString temp = orginal;
 	db->open();
@@ -36,15 +37,9 @@ double Report::getValueOn(const QString src) noexcept
 	q1.next();
 	return (q1.value(0).toDouble());
 
-
-	/*
-
-	  //No __mForms update during changing value in ui, so has to use querries FIX ME!!!!!!
-
+*/
 	for(auto var : __mForms)
 		if(var.name == src) return var.val;
-
-	*/
 }
 
 void Report::onLoad() noexcept
@@ -496,9 +491,19 @@ void Report::on_doubleSpinBox_valueChanged(double arg1)
 {
 	QString quer = "UPDATE prices SET val=::1 WHERE name='::2';";
 	quer.replace("::1", QString::number(arg1));
+	//In tooltip name is stored, so it's easier to look in database
 	quer.replace("::2", ui->comboBox->toolTip());
 	db->open();
 	QSqlQuery q(quer);
 	q.exec();
 	db->close();
+
+	for(auto var : __mForms)
+	{
+		if(var.name == ui->comboBox->toolTip())
+		{
+			var.val = arg1;
+			return;
+		}
+	}
 }
