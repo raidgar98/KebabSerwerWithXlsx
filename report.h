@@ -58,34 +58,44 @@ public:
 	//Holds handy information about values. In future can be optimalized by changing into __mForms, and deleting this one
 	std::map<QString, double> myValues;
 
+	//Holds all prices
 	std::list<DBresult> __mForms;
 
+	//Auto-generated constructor, with one extra parameter (database)
 	explicit Report(QSqlDatabase* ptr, QDialog *parent = nullptr);
+
+	//Auto-generated destructor
 	~Report();
 
+	//Based on name finds price by SQL
 	double getValueOn(const QString src) noexcept;
 
+	//Load all avaiable dishes with prices to __mForms and to myValues
 	void onLoad() noexcept;
-
-	QString dbName, dbPath;
 
 	//This method has to be customize, how you want to generate xlsx
 	void doStuff();
 
+	//Translate name to fullName using __mForms
 	QString translateName(const QString src) const noexcept;
 
+	//Translate number into souce name
 	QString translateSouce(const quint8 src) const noexcept;
 
-	double translateValue(const QString src) const noexcept;
+	//Same as getValueOn
+	double translateValue(const QString src) noexcept;
 
 private slots:
 
+	//Activated if user click 'generuj'
 	void on_Button1_clicked();
 
 //	virtual void on_SpinBox_value_Changed(double d);
 
+	//Activated if user change smthing in comboBox
 	void on_comboBox_currentIndexChanged(const QString &arg1);
 
+	//Activated if somebody change value, use sql (FIX ME!!!! [report.cpp 42])
 	void on_doubleSpinBox_valueChanged(double arg1);
 
 private:

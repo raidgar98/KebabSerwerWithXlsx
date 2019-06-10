@@ -16,8 +16,6 @@ Report::Report(QSqlDatabase* ptr,  QDialog *parent) :
 	ui(new Ui::Report)
 {
 	ui->setupUi(this);
-	dbPath = ptr->databaseName();
-	dbName = ptr->connectionName();
 	onLoad();
 }
 
@@ -28,6 +26,7 @@ Report::~Report()
 
 double Report::getValueOn(const QString src) noexcept
 {
+
 	QString orginal = "SELECT val FROM prices WHERE name='::0';";
 	QString temp = orginal;
 	db->open();
@@ -36,6 +35,16 @@ double Report::getValueOn(const QString src) noexcept
 	db->close();
 	q1.next();
 	return (q1.value(0).toDouble());
+
+
+	/*
+
+	  //No __mForms update during changing value in ui, so has to use querries FIX ME!!!!!!
+
+	for(auto var : __mForms)
+		if(var.name == src) return var.val;
+
+	*/
 }
 
 void Report::onLoad() noexcept
@@ -48,11 +57,6 @@ void Report::onLoad() noexcept
 	q1.next();
 	const quint16 countPrices = static_cast<quint16>(q1.value(0).toInt());
 	quint16 counter = 1;
-
-	cout << countPrices << " " << counter;
-
-
-	//bool switcher = false;
 
 	while (counter != countPrices)
 	{
@@ -72,7 +76,14 @@ void Report::onLoad() noexcept
 
 		q.next();
 
-		__mForms.push_back(DBresult(q.value(namePos).toString(), q.value(fullNamePos).toString(), q.value(valPos).toDouble(), q.value(isExtraPos).toBool()));
+		__mForms.push_back(
+
+					DBresult(
+							   q.value(namePos).toString(), q.value(fullNamePos).toString(),
+							   q.value(valPos).toDouble(), q.value(isExtraPos).toBool())
+
+						   );
+
 		ui->comboBox->addItem(__mForms.back().fullName);
 		myValues[__mForms.back().name] = __mForms.back().val;
 
@@ -168,7 +179,7 @@ void Report::onLoad() noexcept
 
 void Report::doStuff()
 {
-	//First make micromapping of data
+	//First make micromapping of data arrived from database
 	db->open();
 
 	QSqlQuery q("SELECT * FROM orders WHERE orderID=1;");
@@ -329,6 +340,10 @@ void Report::doStuff()
 QString Report::translateName(const QString src) const noexcept
 {
 
+	for(auto var : __mForms)
+		if(var.name == src) return var.fullName;
+
+	/*
 	QString orginal = "SELECT fullName FROM prices WHERE name='::0';";
 	QString temp = orginal;
 	db->open();
@@ -337,46 +352,47 @@ QString Report::translateName(const QString src) const noexcept
 	db->close();
 	q1.next();
 	return (q1.value(0).toString());
-
-/*
-
-	if( src == "DuzCia") return "Duże Ciasto";
-	if( src == "MalCia") return "Małe Ciasto";
-	if( src == "DuzBul") return "Duża Bułka";
-	if( src == "MalBul") return "Mała Bułka";
-	if( src == "DuzPit") return "Duża Pita";
-	if( src == "MalPit") return "Mała Pita";
-	if( src == "MalKub") return "Mału Kubełek";
-	if( src == "DuzKub") return "Duży Kubełek";
-	if( src == "MalGrek") return "Mały Vegański po Grecku";
-	if( src == "DuzGrek") return "Duży Vegański po Grecku";
-	if( src == "VegCia") return "Vegański Kebab w Cieście";
-	if( src == "VegBul") return "Vegański Kebab w Bułce";
-	if( src == "BBQCia") return "Warzywa na Grillu w Cieście";
-	if( src == "BBQBul") return "Warzywa na Grillu w Bułce";
-	if( src == "DuzFry") return "Duże Frytki";
-	if( src == "MalFry") return "Małe Frytki";
-	if( src == "ZapWie") return "Zapiekanka Wiejska";
-	if( src == "ZapDia") return "Zapiekanka Diabelska";
-	if( src == "ZapVeg") return "Zapiekanka Vegańska";
-	if( src == "ZapSzp") return "Zapiekanka Szpinakowa";
-	if( src == "ZapDos") return "Zapiekanka Dowolna";
-	if( src == "FirstSouce") return "Pierwszy Sos";
-	if( src == "SecondValue") return "Drugi Sos";
-	if( src == "Meat") return "Dodatkowe Mięso";
-	if( src == "Salad") return "Dodatkowa Sałatka";
-	if( src == "Fries") return "Dodatkowe Frytki";
-	if( src == "Cheese") return "Dodatkowy Ser";
-	if( src == "Extras") return "Inne Dodatki";
-	if( src == "TakeAway") return "Na Wynos";
-	if( src == "Temp") return "Potrawa Tymczasowa";
-	//TO DO: Standarize names
-
 	*/
+
+	/*
+
+		if( src == "DuzCia") return "Duże Ciasto";
+		if( src == "MalCia") return "Małe Ciasto";
+		if( src == "DuzBul") return "Duża Bułka";
+		if( src == "MalBul") return "Mała Bułka";
+		if( src == "DuzPit") return "Duża Pita";
+		if( src == "MalPit") return "Mała Pita";
+		if( src == "MalKub") return "Mału Kubełek";
+		if( src == "DuzKub") return "Duży Kubełek";
+		if( src == "MalGrek") return "Mały Vegański po Grecku";
+		if( src == "DuzGrek") return "Duży Vegański po Grecku";
+		if( src == "VegCia") return "Vegański Kebab w Cieście";
+		if( src == "VegBul") return "Vegański Kebab w Bułce";
+		if( src == "BBQCia") return "Warzywa na Grillu w Cieście";
+		if( src == "BBQBul") return "Warzywa na Grillu w Bułce";
+		if( src == "DuzFry") return "Duże Frytki";
+		if( src == "MalFry") return "Małe Frytki";
+		if( src == "ZapWie") return "Zapiekanka Wiejska";
+		if( src == "ZapDia") return "Zapiekanka Diabelska";
+		if( src == "ZapVeg") return "Zapiekanka Vegańska";
+		if( src == "ZapSzp") return "Zapiekanka Szpinakowa";
+		if( src == "ZapDos") return "Zapiekanka Dowolna";
+		if( src == "FirstSouce") return "Pierwszy Sos";
+		if( src == "SecondValue") return "Drugi Sos";
+		if( src == "Meat") return "Dodatkowe Mięso";
+		if( src == "Salad") return "Dodatkowa Sałatka";
+		if( src == "Fries") return "Dodatkowe Frytki";
+		if( src == "Cheese") return "Dodatkowy Ser";
+		if( src == "Extras") return "Inne Dodatki";
+		if( src == "TakeAway") return "Na Wynos";
+		if( src == "Temp") return "Potrawa Tymczasowa";
+		//TO DO: Standarize names
+
+		*/
 
 }
 
-double Report::translateValue(const QString src) const noexcept
+double Report::translateValue(const QString src) noexcept
 {
 /*	if( src == "DuzCia") return ui->DuzCia->value();
 	if( src == "MalCia") return ui->MalCia->value();
@@ -401,10 +417,14 @@ double Report::translateValue(const QString src) const noexcept
 	if( src == "ZapDos") return ui->ZapCust->value();
 	if( src == "Temp") return ui->TempDish->value();
 	*/
-	for(auto var : __mForms)
+/*	for(auto var : __mForms)
 	{
 		if(var.name == src) return var.val;
 	}
+
+*/
+
+	return getValueOn(src);
 }
 
 QString Report::translateSouce(const quint8 src) const noexcept
@@ -431,6 +451,7 @@ void Report::on_Button1_clicked()
 	a.exec();
 	doStuff();
 }
+
 /*
 void Report::on_SpinBox_value_Changed(double d)
 {

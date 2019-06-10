@@ -4,7 +4,7 @@
 
 TcpConnections::TcpConnections(QObject *parent) : QObject(parent)
 {
-    cout<<this << " Created.";
+ //   cout<<this << " Created.";
 }
 
 size_t TcpConnections::mCountFunction() const
@@ -31,7 +31,7 @@ void TcpConnections::_mRemoveSocketFunction(QTcpSocket *socket)
 
 	socket->deleteLater();
 
-	cout << this << "clients: "<<_mConnection.size();
+	//cout << this << "clients: "<<_mConnection.size();
 }
 
 void TcpConnections::disconnected()
