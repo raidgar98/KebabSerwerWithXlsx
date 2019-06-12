@@ -152,9 +152,10 @@ void MainWindow::mAnswerNewDataFunction()
 bool MainWindow::mMakeDecissionFunction(QByteArray & src, const quint8 id)
 {
 	QByteArray data = src;
-	if(data == "hello server \r\n\r\n\r\n")
+	if(data == "conn\r\n\r\n\r\n")
 	{
 		src = "ok\r\n";
+		mLogFunction("User "+ QString::number(id) + " Connected", LogType::Info);
 		return true;
 	}else if (data.indexOf("^\r\n")!=-1)
 	{
