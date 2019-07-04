@@ -28,7 +28,7 @@ void TcpConnection::wrtieData(QByteArray src)
 		mIsReadyRead = false;
 		_mSocket->write(src);
 		_mSocket->waitForBytesWritten();
-		mGetSocketFunction()->flush();
+		//mGetSocketFunction()->flush();
 	}
 }
 

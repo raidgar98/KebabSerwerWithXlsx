@@ -122,31 +122,35 @@ void MainWindow::on_Button2_clicked()
 
 void MainWindow::mAnswerNewDataFunction()
 {
-	//cout << this << " disp Działa";
-	TcpConnection * tempSck = __mSerwerPointer->dataQueueRead.first().first;
+	TcpConnection * tempSck = __mSerwerPointer->dataQueueRead.front().first;
 	QByteArray temp = __mSerwerPointer->dataQueueRead.front().second;
+
 	QObject::connect(this, &MainWindow::writeAvaiable, tempSck, &TcpConnection::wrtieData);
+
 	__mSerwerPointer->dataQueueRead.pop_front();
 	mLogFunction(temp, LogType::Received);
-	//cout<<this << "zaloggowałem: " <<temp;
+
 	if(mMakeDecissionFunction(temp, tempSck->id))
 	{
 		mLogFunction(temp, LogType::Send);
-		//	cout << this << "disp: Wysyłam " <<temp;
 		emit writeAvaiable(temp);
 	}
 	else
 	{
-		//	cout << this << "disp: Wysyłam " <<temp;
 		if(temp == "\r\n")
 		{
 			return;
-		}else
+		}
+		else
 		{
 			mLogFunction("Err\r\n", LogType::Send);
 			emit writeAvaiable("Err\r\n");
 		}
 	}
+
+	tempSck->disconnect(this, &MainWindow::writeAvaiable, tempSck, &TcpConnection::wrtieData);
+	tempSck = nullptr;
+
 }
 
 bool MainWindow::mMakeDecissionFunction(QByteArray & src, const quint8 id)

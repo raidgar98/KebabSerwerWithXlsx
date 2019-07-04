@@ -194,8 +194,10 @@ void Report::doStuff()
 	const quint8 orderDateTime = static_cast<quint8>(q.record().indexOf("orderDateTime"));
 
 	//Because of getting many values at once not working, so i get minimum and maximum id and next i get them one by one, simply incrementing
-	QString getIDtemplate = "SELECT ::0(orderID) FROM orders WHERE orderDateTime LIKE '::1%';";
+	QString getIDtemplate = "SELECT ::0(orderID) FROM orders WHERE orderDateTime LIKE '::1 %';";
+	QString getCount = "SELECT COUNT(*) FROM orders WHERE orderDateTime LIKE '::1 %';";
 	getIDtemplate.replace("::1", ui->Calendar1->selectedDate().toString("yyyy-MM-dd"));
+	getCount.replace("::1", ui->Calendar1->selectedDate().toString("yyyy-MM-dd"));
 	QString getIdMin = getIDtemplate;
 	QString getIdMax = getIDtemplate;
 	getIdMin.replace("::0", "MIN");
@@ -207,9 +209,14 @@ void Report::doStuff()
 
 	QSqlQuery q1(getIdMin);
 	QSqlQuery q2(getIdMax);
+	QSqlQuery q3(getCount);
 
 	q1.exec();
 	q2.exec();
+	q3.exec();
+
+	//cout << q1.lastQuery();
+	//cout << q2.lastQuery();
 
 	db->close();
 	q1.next();
@@ -255,7 +262,8 @@ void Report::doStuff()
 	xlsx.write(1,10, "Koszt Dania");
 	xlsx.write(1,11,"Czas wykonania zamówienia");
 
-	int lastRecord = maxID - minID + 2;
+	q3.next();
+	int lastRecord = q3.value(0).toInt() + 1;
 
 	//Setting summary
 	xlsx.write((lastRecord)+1, 1, "Ilość pozycji",formatSTR);
@@ -289,13 +297,14 @@ void Report::doStuff()
 	xlsx.write((lastRecord)+2, 10, "=SUMA(J2:J"+QString::number(lastRecord)+") + SUMA(C"+QString::number(lastRecord+2)+":I"+QString::number(lastRecord+2)+")", formatFINAL);
 
 	//Template for querry for selecting record one by one
-	const QString selectTemplate = "SELECT * FROM orders WHERE orderID=::0;";
+	const QString selectTemplate = "SELECT * FROM orders WHERE orderID=::0 AND orderDateTime LIKE '::1 %';";
 	int licznik = minID;
 	int row = 2;
 	while(licznik <= maxID)
 	{
 		QString actQuerry =selectTemplate;
 		actQuerry.replace("::0", QString::number(licznik));
+		actQuerry.replace("::1", ui->Calendar1->selectedDate().toString("yyyy-MM-dd"));
 		licznik++;
 		db->open();
 		QSqlQuery actq(actQuerry);
@@ -304,7 +313,7 @@ void Report::doStuff()
 		actq.next();
 
 		//If empty just continue
-		if(actq.value(orderID).isNull()) continue;
+		if(actq.isNull(0)) continue;
 
 		//Filling columns and rows
 		xlsx.write(row,1,actq.value(orderID).toInt(),formatCALK);
