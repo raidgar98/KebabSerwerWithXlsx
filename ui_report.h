@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'report.ui'
 **
-** Created by: Qt User Interface Compiler version 5.12.3
+** Created by: Qt User Interface Compiler version 5.12.4
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -83,7 +83,7 @@ public:
 
     void retranslateUi(QWidget *Report)
     {
-        Report->setWindowTitle(QApplication::translate("Report", "Form", nullptr));
+        Report->setWindowTitle(QApplication::translate("Report", "Generuj Raport", nullptr));
         Button1->setText(QApplication::translate("Report", "Generuj Raport z Wybranego Dnia", nullptr));
         pathOfSave->setText(QApplication::translate("Report", "Miejsce Generowania Raportu", nullptr));
     } // retranslateUi
