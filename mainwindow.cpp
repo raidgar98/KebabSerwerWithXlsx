@@ -155,33 +155,34 @@ void MainWindow::mAnswerNewDataFunction()
 
 bool MainWindow::mMakeDecissionFunction(QByteArray & src, const quint8 id)
 {
-	QByteArray data = src;
-	if(data == "conn\r\n\r\n\r\n")
+    if(src == "conn\r\n\r\n\r\n")
 	{
 		src = "ok\r\n";
 		mLogFunction("User "+ QString::number(id) + " Connected", LogType::Info);
 		return true;
-	}else if (data.indexOf("^\r\n")!=-1)
+    }else if (src.indexOf("^\r\n")!=-1)
 	{
 		src = "\r\n";
 		mLogFunction("User "+ QString::number(id) + " Disconnected", LogType::Info);
 		return false;
 	}
-	else if (data.indexOf("^&\r\n")!=-1)
+    else if (src.indexOf("^&\r\n")!=-1)
 	{
 		src = "ok\r\n";
 		mLogFunction("User "+ QString::number(id) + " Connected", LogType::Info);
 		return true;
-	}
+    }
 	else
 	{
-		src = "ok\r\n";
 		mLogFunction(src , LogType::Received);
-		data.chop(2);
+        src.chop(2);
 		QFile a("temp.txt");
 		a.open(QFile::OpenModeFlag::WriteOnly);
-		a.write(data);
+        a.write(src);
 		a.close();
+
+        src = "ok\r\n";
+
 		__mCSV2SQLengine = new SQLInterpreter("temp.txt", "INSERT INTO orders(dishName, dishSouce, extraMeat, extraSalad, extraFries, extraCheese, otherExtras, takeAway, isComplete, orderDateTime) VALUES('::1', ::2, ::3, ::4, ::5, ::6, ::7, ::8, ::9, '::x10');");
 		QObject::connect(__mCSV2SQLengine, &SQLInterpreter::saveSQL, this, &MainWindow::mWriteLocalSQLFunction);
 		__mCSV2SQLengine->save();
